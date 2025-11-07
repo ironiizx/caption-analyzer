@@ -103,7 +103,7 @@
   </main>
 
   <script>
-    const API_DEFAULT = 'http://localhost:3000/caption';
+    const API_DEFAULT = 'https://caption-backend-production-5f4a.up.railway.app/caption';
     const backendUrl = localStorage.getItem('CAPTION_API') || API_DEFAULT;
 
     function setModelTag(text){ document.getElementById('modelTag').textContent = text || '—'; }
