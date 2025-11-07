@@ -63,21 +63,59 @@
     function setModelTag(text){ document.getElementById('modelTag').textContent = text || '—'; }
     function spinner(){ return `<div class="loader"></div><div class="muted xs">Processing…</div>`; }
 
+    // --- FUNCIÓN DE MÉTRICAS (NUEVA) ---
+    // Resetea las métricas a su estado inicial
+    function resetMetrics() {
+      document.getElementById('mBrightness').textContent = '—';
+      document.getElementById('mContrast').textContent = '—';
+      document.getElementById('mSaturation').textContent = '—';
+      // Resetea el color al gradiente por defecto (definido en style.css)
+      document.getElementById('mColor').style.background = '';
+      document.getElementById('mEdges').textContent = '—';
+      document.getElementById('mText').textContent = '—';
+    }
+
+    // --- FUNCIÓN DE RESULTADO (ACTUALIZADA) ---
     function displayResult(data){
       const box = document.getElementById('urlResult');
       if (data?.model) setModelTag(data.model);
+
       if (data?.error || !data?.caption){
         box.innerHTML = `<div class="error">⚠️ ${data.error || 'No response.'}</div>`;
         return;
       }
+      
+      // 1. Mostrar el Caption
       box.innerHTML = `<div class="caption"><h3>AI Caption</h3><p>${data.caption}</p></div>`;
+
+      // 2. Mostrar las Métricas (si existen)
+      if (data.metrics) {
+        const metrics = data.metrics;
+        // Helper para convertir 0.0-1.0 a "0%"-"100%"
+        const toPercent = (n) => (n * 100).toFixed(0) + '%';
+
+        document.getElementById('mBrightness').textContent = toPercent(metrics.brightness);
+        document.getElementById('mContrast').textContent = toPercent(metrics.contrast);
+        document.getElementById('mSaturation').textContent = toPercent(metrics.saturation);
+        document.getElementById('mColor').style.background = metrics.dominantColor;
+        document.getElementById('mEdges').textContent = toPercent(metrics.edgeDensity);
+        document.getElementById('mText').textContent = toPercent(metrics.textRatio); // Mostrará 0%
+      }
     }
 
+    // --- FUNCIÓN PRINCIPAL (ACTUALIZADA) ---
     async function captionByUrl(){
       const url = document.getElementById('url').value.trim();
       const prev = document.getElementById('urlPrev');
       const result = document.getElementById('urlResult');
-      if (!url) return alert('Ingresá una URL');
+      if (!url) {
+        // No usar alert, es bloqueante.
+        console.warn('No URL provided');
+        return;
+      }
+
+      // Limpiar métricas anteriores
+      resetMetrics(); // <--- AÑADIDO
 
       prev.innerHTML = `<img src="${url}" alt="preview" />`;
       result.innerHTML = spinner();
