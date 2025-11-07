@@ -1,103 +1,57 @@
 <!doctype html>
-<html lang="es" class="compact">
+<html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thumbnail Insights</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Top Nav -->
   <header class="nav">
     <div class="brand">
       <span class="brand__dot"></span>
-      <span class="brand__title">Thumbnail <strong>Insights</strong></span>
+      <h1 class="brand__title">Thumbnail <strong>Insights</strong></h1>
     </div>
-    <nav class="nav__tabs">
-      <a class="tab is-active" href="#">Dashboard</a>
-      <a class="tab" href="#">Stats</a>
-      <a class="tab" href="#">Analyze</a>
-      <a class="tab" href="#">Trends</a>
-    </nav>
-    <div class="nav__right"><span class="badge">beta</span></div>
   </header>
 
-  <div class="bg-glow"></div>
-
-  <!-- Lienzo 100vh sin scroll -->
-  <main class="canvas">
-    <!-- Columna izquierda: Input -->
-    <section class="card card--input">
-      <h3 class="card__title">Input</h3>
-
+  <main class="layout">
+    <!-- Input -->
+    <section class="panel panel--input">
+      <h2>Input</h2>
       <div class="field">
-        <label class="label">By URL</label>
+        <label>By URL</label>
         <div class="input-row">
           <input id="url" type="text" placeholder="https://example.com/image.jpg" />
           <button id="btnUrl" class="btn">Analyze</button>
         </div>
       </div>
-
-      <div class="divider"></div>
-
-      <div class="field">
-        <label class="label">By File <span class="muted">(soon)</span></label>
-        <div class="input-row">
-          <input id="file" type="file" accept="image/*" disabled />
-          <button id="btnFile" class="btn" disabled>Analyze</button>
-        </div>
-      </div>
-
       <div class="hint">
         <span class="dot"></span>
-        Using model: <code id="modelTag">Xenova/vit-gpt2-image-captioning</code>
+        Using model:
+        <code id="modelTag">Xenova/vit-gpt2-image-captioning</code>
       </div>
     </section>
 
-    <!-- Columna derecha: UNA tarjeta con todo -->
-    <section class="card card--right">
-      <div class="right-grid">
-        <!-- Preview (arriba) -->
-        <div class="zone zone--preview">
-          <div class="zone__header">
-            <h3 class="card__title">Preview</h3>
-            <div class="view-switch">
-              <button class="pill is-active">Original</button>
-              <button class="pill" disabled>Overlay</button>
-              <button class="pill" disabled>Compare</button>
-            </div>
-          </div>
-          <div id="urlPrev" class="preview"></div>
-        </div>
+    <!-- Imagen y caption -->
+    <section class="panel panel--preview">
+      <div id="urlPrev" class="preview">
+        <div class="placeholder">Paste an image URL to start.</div>
+      </div>
+      <div id="urlResult" class="caption-box">
+        <div class="placeholder">Awaiting analysis…</div>
+      </div>
+    </section>
 
-        <!-- Caption (abajo izquierda) -->
-        <div class="zone">
-          <h3 class="card__title">AI Caption</h3>
-          <div id="urlResult" class="result-box">
-            <div class="placeholder">Paste a URL and press <strong>Analyze</strong>.</div>
-          </div>
-        </div>
-
-        <!-- Metrics (abajo derecha) -->
-        <div class="zone">
-          <div class="zone__header">
-            <h3 class="card__title">Visual Metrics</h3>
-            <div class="view-switch">
-              <button class="pill is-active">Overview</button>
-              <button class="pill" disabled>Histogram</button>
-              <button class="pill" disabled>Radar</button>
-            </div>
-          </div>
-
-          <div class="metrics">
-            <div class="metric"><div class="metric__label">Brightness</div><div class="metric__value" id="mBrightness">—</div></div>
-            <div class="metric"><div class="metric__label">Contrast</div><div class="metric__value" id="mContrast">—</div></div>
-            <div class="metric"><div class="metric__label">Saturation</div><div class="metric__value" id="mSaturation">—</div></div>
-            <div class="metric"><div class="metric__label">Dominant Color</div><div class="metric__swatch" id="mColor"></div></div>
-            <div class="metric"><div class="metric__label">Edge Density</div><div class="metric__value" id="mEdges">—</div></div>
-            <div class="metric"><div class="metric__label">Text Ratio</div><div class="metric__value" id="mText">—</div></div>
-          </div>
-        </div>
+    <!-- Métricas -->
+    <section class="panel panel--metrics">
+      <h2>Visual Metrics</h2>
+      <div class="metrics">
+        <div class="metric"><span>Brightness</span><strong id="mBrightness">—</strong></div>
+        <div class="metric"><span>Contrast</span><strong id="mContrast">—</strong></div>
+        <div class="metric"><span>Saturation</span><strong id="mSaturation">—</strong></div>
+        <div class="metric"><span>Dominant Color</span><div id="mColor" class="swatch"></div></div>
+        <div class="metric"><span>Edge Density</span><strong id="mEdges">—</strong></div>
+        <div class="metric"><span>Text Ratio</span><strong id="mText">—</strong></div>
       </div>
     </section>
   </main>
@@ -107,38 +61,38 @@
     const backendUrl = localStorage.getItem('CAPTION_API') || API_DEFAULT;
 
     function setModelTag(text){ document.getElementById('modelTag').textContent = text || '—'; }
-    function spinner(){ return `<div class="loader-wrap"><div class="loader"></div><div class="muted xs">Processing…</div></div>`; }
+    function spinner(){ return `<div class="loader"></div><div class="muted xs">Processing…</div>`; }
 
-    function displayResult(elementId, data){
-      const el = document.getElementById(elementId);
+    function displayResult(data){
+      const box = document.getElementById('urlResult');
       if (data?.model) setModelTag(data.model);
       if (data?.error || !data?.caption){
-        el.innerHTML = `<div class="callout callout--error"><div class="callout__title">Error</div><div class="callout__body">${data.error || 'No response.'}</div></div>`;
+        box.innerHTML = `<div class="error">⚠️ ${data.error || 'No response.'}</div>`;
         return;
       }
-      el.innerHTML = `<div class="caption"><div class="caption__label">Caption</div><div class="caption__text">${data.caption}</div></div>`;
+      box.innerHTML = `<div class="caption"><h3>AI Caption</h3><p>${data.caption}</p></div>`;
     }
 
     async function captionByUrl(){
       const url = document.getElementById('url').value.trim();
       const prev = document.getElementById('urlPrev');
-      const resBox = document.getElementById('urlResult');
+      const result = document.getElementById('urlResult');
       if (!url) return alert('Ingresá una URL');
 
-      prev.innerHTML = `<img src="${url}" alt="preview">`;
-      resBox.innerHTML = spinner();
+      prev.innerHTML = `<img src="${url}" alt="preview" />`;
+      result.innerHTML = spinner();
 
-      try{
+      try {
         const res = await fetch(backendUrl, {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ image_url: url })
         });
-        if(!res.ok) throw new Error('Server error: '+res.status);
+        if (!res.ok) throw new Error('Server error ' + res.status);
         const data = await res.json();
-        displayResult('urlResult', data);
-      }catch(err){
-        displayResult('urlResult', { error: err.message });
+        displayResult(data);
+      } catch (err) {
+        displayResult({ error: err.message });
       }
     }
 
