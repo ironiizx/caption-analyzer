@@ -4,7 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Thumbnail Insights</title>
-  <!-- Sigue linkeando al style.css -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -43,7 +42,7 @@
       </div>
     </section>
 
-    <!-- Métricas (NUEVA ESTRUCTURA) -->
+    <!-- Métricas (HTML Reordenado + Gradientes) -->
     <section class="panel panel--metrics">
       <h2>Visual Metrics</h2>
       <div class="metrics">
@@ -51,8 +50,15 @@
         <!-- Dial para Brightness -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
+            <!-- Definición de Gradiente -->
+            <defs>
+              <linearGradient id="gradBrightness" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7dd3fc;" />
+                <stop offset="100%" style="stop-color:#3b82f6;" />
+              </linearGradient>
+            </defs>
             <path class="dial-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path class="dial-fill" id="fillBrightness" stroke-dasharray="100, 100" stroke-dashoffset="100"
+            <path class="dial-fill" id="fillBrightness" stroke="url(#gradBrightness)" stroke-dasharray="100, 100" stroke-dashoffset="100"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="dial-label">
@@ -64,8 +70,14 @@
         <!-- Dial para Contrast -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
+            <defs>
+              <linearGradient id="gradContrast" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7dd3fc;" />
+                <stop offset="100%" style="stop-color:#3b82f6;" />
+              </linearGradient>
+            </defs>
             <path class="dial-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path class="dial-fill" id="fillContrast" stroke-dasharray="100, 100" stroke-dashoffset="100"
+            <path class="dial-fill" id="fillContrast" stroke="url(#gradContrast)" stroke-dasharray="100, 100" stroke-dashoffset="100"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="dial-label">
@@ -77,8 +89,14 @@
         <!-- Dial para Saturation -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
+            <defs>
+              <linearGradient id="gradSaturation" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7dd3fc;" />
+                <stop offset="100%" style="stop-color:#3b82f6;" />
+              </linearGradient>
+            </defs>
             <path class="dial-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path class="dial-fill" id="fillSaturation" stroke-dasharray="100, 100" stroke-dashoffset="100"
+            <path class="dial-fill" id="fillSaturation" stroke="url(#gradSaturation)" stroke-dasharray="100, 100" stroke-dashoffset="100"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="dial-label">
@@ -90,8 +108,14 @@
         <!-- Dial para Edge Density -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
+            <defs>
+              <linearGradient id="gradEdges" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7dd3fc;" />
+                <stop offset="100%" style="stop-color:#3b82f6;" />
+              </linearGradient>
+            </defs>
             <path class="dial-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path class="dial-fill" id="fillEdges" stroke-dasharray="100, 100" stroke-dashoffset="100"
+            <path class="dial-fill" id="fillEdges" stroke="url(#gradEdges)" stroke-dasharray="100, 100" stroke-dashoffset="100"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="dial-label">
@@ -100,17 +124,17 @@
           </div>
         </div>
 
-        <!-- Métrica para Dominant Color (sin dial) -->
-        <div class="metric-color">
-          <span>Dominant Color</span>
-          <div id="mColor" class="swatch"></div>
-        </div>
-
-        <!-- Dial para Text Ratio (lo dejamos por si lo implementas) -->
+        <!-- Dial para Text Ratio -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
+            <defs>
+              <linearGradient id="gradText" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style="stop-color:#7dd3fc;" />
+                <stop offset="100%" style="stop-color:#3b82f6;" />
+              </linearGradient>
+            </defs>
             <path class="dial-track" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
-            <path class="dial-fill" id="fillText" stroke-dasharray="100, 100" stroke-dashoffset="100"
+            <path class="dial-fill" id="fillText" stroke="url(#gradText)" stroke-dasharray="100, 100" stroke-dashoffset="100"
                   d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
           </svg>
           <div class="dial-label">
@@ -118,78 +142,58 @@
             <span>Text</span>
           </div>
         </div>
+        
+        <!-- Métrica para Dominant Color (REORDENADA AL FINAL) -->
+        <div class="metric-color">
+          <span>Dominant Color</span>
+          <div id="mColor" class="swatch"></div>
+        </div>
+
       </div>
     </section>
   </main>
 
-  <!-- (NUEVO) SCRIPT ACTUALIZADO -->
+  <!-- Script (Sin cambios) -->
   <script>
     const API_DEFAULT = 'https://caption-backend-production-5f4a.up.railway.app/caption';
     const backendUrl = localStorage.getItem('CAPTION_API') || API_DEFAULT;
-
-    // Constante para el radio del SVG
-    // El '100' corresponde al 'stroke-dasharray'
     const SVG_CIRCLE_LENGTH = 100;
-
     function setModelTag(text) { document.getElementById('modelTag').textContent = text || '—'; }
     function spinner() { return `<div class="loader"></div><div class="muted xs">Processing…</div>`; }
-
-    /**
-     * Helper para actualizar un dial y su etiqueta
-     */
     function updateDial(metricId, value) {
       const fillEl = document.getElementById(`fill${metricId}`);
       const labelEl = document.getElementById(`m${metricId}`);
       if (!fillEl || !labelEl) return;
-      
       const percent = Math.max(0, Math.min(100, value * 100));
       const offset = SVG_CIRCLE_LENGTH - percent;
-
       labelEl.textContent = percent.toFixed(0) + '%';
-      
-      // RequestAnimationFrame asegura que la animación se ejecute suavemente
       requestAnimationFrame(() => {
         fillEl.style.strokeDashoffset = offset;
       });
     }
-
-    /**
-     * Resetea todos los diales a 0
-     */
     function resetMetrics() {
       const ids = ['Brightness', 'Contrast', 'Saturation', 'Edges', 'Text'];
       ids.forEach(id => {
         const fillEl = document.getElementById(`fill${id}`);
         const labelEl = document.getElementById(`m${id}`);
         if (fillEl) {
-            // Forzar reflow para reiniciar la animación
             fillEl.style.transition = 'none';
             fillEl.style.strokeDashoffset = SVG_CIRCLE_LENGTH;
-            fillEl.offsetHeight; // Forzar reflow
+            fillEl.offsetHeight; 
             fillEl.style.transition = 'stroke-dashoffset 0.8s cubic-bezier(0.25, 0.1, 0.25, 1)';
         }
         if (labelEl) labelEl.textContent = '—';
       });
-      // Resetear color
       document.getElementById('mColor').style.background = 'linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #3b82f6, #8b5cf6)';
     }
-
-    /**
-     * Muestra los resultados (caption y métricas)
-     */
     function displayResult(data) {
       const box = document.getElementById('urlResult');
       if (data?.model) setModelTag(data.model);
-
       if (data?.error || !data?.caption) {
         box.innerHTML = `<div class="error">⚠️ ${data.error || 'No response.'}</div>`;
         return;
       }
-      
-      // 1. Mostrar el Caption
       box.innerHTML = `<div class="caption"><h3>AI Caption</h3><p>${data.caption}</p></div>`;
-
-      // 2. Mostrar Métricas (con un pequeño delay para la animación)
       if (data.metrics) {
         const metrics = data.metrics;
         setTimeout(() => {
@@ -199,28 +203,20 @@
           updateDial('Edges', metrics.edgeDensity);
           updateDial('Text', metrics.textRatio);
           document.getElementById('mColor').style.background = metrics.dominantColor || '#fff';
-        }, 100); // 100ms de delay
+        }, 100); 
       }
     }
-
-    /**
-     * Función principal para llamar al backend
-     */
     async function captionByUrl() {
       const url = document.getElementById('url').value.trim();
       const prev = document.getElementById('urlPrev');
       const result = document.getElementById('urlResult');
       if (!url) {
-        // Evita el 'alert()' que puede ser bloqueado
         console.warn('No URL provided');
         return;
       }
-
-      // Limpiar UI
       prev.innerHTML = `<img src="${url}" alt="preview" />`;
       result.innerHTML = spinner();
-      resetMetrics(); // <-- Resetea los diales
-
+      resetMetrics(); 
       try {
         const res = await fetch(backendUrl, {
           method: 'POST',
@@ -234,16 +230,12 @@
         displayResult({ error: err.message });
       }
     }
-
     document.getElementById('btnUrl').addEventListener('click', captionByUrl);
-
-    // Opcional: Analizar al presionar Enter en el input
     document.getElementById('url').addEventListener('keyup', (e) => {
       if (e.key === 'Enter') {
         captionByUrl();
       }
     });
-
   </script>
 </body>
 </html>

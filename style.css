@@ -9,11 +9,11 @@
   --shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
   --fs: 14px;
   
-  /* NUEVAS variables para los diales */
   --dial-size: 80px;
   --dial-stroke: 6;
-  --dial-track-color: #334155; /* slate-700 */
-  --dial-fill-color: var(--accent);
+  --dial-track-color: #334155; 
+  /* La variable --dial-fill-color ya no se usa, 
+     porque el gradiente se define en el HTML */
 }
 
 /* ===== Base ===== */
@@ -32,7 +32,7 @@ body {
   box-sizing: border-box;
 }
 
-/* ===== Navbar ===== */
+/* ===== Navbar (sin cambios) ===== */
 .nav {
   display: flex;
   align-items: center;
@@ -40,7 +40,7 @@ body {
   height: 56px;
   background: linear-gradient(180deg, #0b1327, rgba(11, 19, 39, 0.8));
   border-bottom: 1px solid #0f1b33;
-  flex-shrink: 0; /* Evita que se encoja */
+  flex-shrink: 0;
 }
 .brand {
   display: flex;
@@ -62,7 +62,7 @@ body {
   color: var(--accent);
 }
 
-/* ===== Layout ===== */
+/* ===== Layout (sin cambios) ===== */
 .layout {
   flex: 1;
   display: grid;
@@ -72,10 +72,10 @@ body {
   max-width: 1600px;
   margin: 0 auto;
   box-sizing: border-box;
-  overflow: hidden; /* Evita desbordes */
+  overflow: hidden; 
 }
 
-/* ===== Panels ===== */
+/* ===== Panels (sin cambios) ===== */
 .panel {
   background: var(--panel);
   border: 1px solid var(--stroke);
@@ -85,35 +85,31 @@ body {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  overflow-y: auto; /* Permite scroll si el contenido es mucho */
+  overflow-y: auto; 
 }
 
-/* ===== Input Panel ===== */
+/* ===== Input Panel (sin cambios) ===== */
 .panel--input {
   display: flex;
   flex-direction: column;
   gap: 14px;
   min-width: 320px;
 }
-
 h2 {
   margin: 0;
   font-size: 1.05rem;
   color: #fff;
 }
-
 .field {
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
-
 .input-row {
   display: flex;
   align-items: center;
   gap: 8px;
 }
-
 .input-row input[type="text"] {
   flex: 1;
   min-width: 0;
@@ -128,12 +124,10 @@ h2 {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-
 .input-row input[type="text"]:focus {
   border-color: var(--accent);
   box-shadow: 0 0 8px #3b82f640;
 }
-
 .btn {
   flex-shrink: 0;
   padding: 9px 14px;
@@ -148,7 +142,6 @@ h2 {
 .btn:hover {
   box-shadow: 0 0 10px #3b82f660;
 }
-
 .hint {
   font-size: 0.85rem;
   color: #cbd5e1;
@@ -171,7 +164,7 @@ h2 {
   max-width: 200px;
 }
 
-/* ===== Preview ===== */
+/* ===== Preview (sin cambios) ===== */
 .panel--preview {
   display: flex;
   flex-direction: column;
@@ -179,7 +172,6 @@ h2 {
   justify-content: flex-start;
   gap: 10px;
 }
-
 .preview {
   flex: 1;
   width: 100%;
@@ -191,7 +183,6 @@ h2 {
   background: #0d1426;
   overflow: hidden;
 }
-
 .preview img {
   max-width: 100%;
   max-height: 75vh;
@@ -203,7 +194,6 @@ h2 {
 .preview img[src] {
   opacity: 1;
 }
-
 .caption-box {
   width: 100%;
   background: #0d1426;
@@ -229,7 +219,7 @@ h2 {
   font-size: 0.9rem;
 }
 
-/* ===== (NUEVO) Metrics Panel ===== */
+/* ===== (ACTUALIZADO) Metrics Panel ===== */
 .panel--metrics {
   min-width: 300px;
   gap: 10px;
@@ -238,16 +228,16 @@ h2 {
   margin-bottom: 4px;
 }
 
+/* AHORA ES UNA COLUMNA FLEX */
 .metrics {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* 2 columnas */
-  gap: 16px;
-  justify-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* Espacio vertical */
+  align-items: center; /* Centra los diales */
 }
 
-/* Estilo para el color dominante (el único que no es dial) */
+/* Estilo para el color dominante (sin cambios) */
 .metric-color {
-  grid-column: 1 / -1; /* Ocupa todo el ancho */
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -270,7 +260,7 @@ h2 {
   margin-top: 4px;
 }
 
-/* Estilos para los Diales */
+/* Estilos para los Diales (sin cambios) */
 .metric-dial {
   position: relative;
   width: var(--dial-size);
@@ -283,7 +273,7 @@ h2 {
 .metric-dial svg {
   width: 100%;
   height: 100%;
-  transform: rotate(-90deg); /* Inicia el círculo a las 12 en punto */
+  transform: rotate(-90deg); 
   overflow: visible;
 }
 .dial-track,
@@ -295,17 +285,17 @@ h2 {
   stroke: var(--dial-track-color);
 }
 .dial-fill {
-  stroke: var(--dial-fill-color);
-  stroke-linecap: round; /* Bordes redondeados */
-  /* La animación y el offset se manejan por JS */
+  /* ¡Propiedad 'stroke' eliminada! */
+  /* El color ahora se controla desde el HTML */
+  stroke-linecap: round; 
   transition: stroke-dashoffset 0.8s cubic-bezier(0.25, 0.1, 0.25, 1);
 }
 
-/* Colores custom para cada dial */
-#fillContrast { stroke: #eab308; } /* yellow-500 */
-#fillSaturation { stroke: #22c55e; } /* green-500 */
-#fillEdges { stroke: #ec4899; } /* pink-500 */
-#fillText { stroke: #a855f7; } /* purple-500 */
+/* ¡Colores custom eliminados! */
+/* #fillContrast { ... }
+#fillSaturation { ... }
+...etc...
+*/
 
 .dial-label {
   position: absolute;
@@ -323,11 +313,8 @@ h2 {
   font-weight: 500;
 }
 
-/* (ELIMINADO) .metric y .swatch antiguos */
-/* El .swatch de .metric-color lo reemplaza */
 
-
-/* ===== Loader / Error ===== */
+/* ===== Loader / Error (sin cambios) ===== */
 .loader {
   width: 22px;
   height: 22px;
@@ -348,7 +335,7 @@ h2 {
   text-align: center;
 }
 
-/* ===== Responsive ===== */
+/* ===== Responsive (ACTUALIZADO) ===== */
 @media (max-width: 1200px) {
   .layout {
     grid-template-columns: 280px 1fr;
@@ -356,27 +343,29 @@ h2 {
   }
   .panel--metrics {
     grid-column: 1 / span 2;
+    flex-direction: row; 
+    flex-wrap: wrap;
+    justify-content: space-around;
+  }
+  
+  /* Se eliminó la regla .metrics 
+     para que herede el layout flex-row del panel */
+  .metrics {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: space-around;
-  }
-  /* (MODIFICADO) responsive para los diales */
-  .metrics {
-    width: 100%;
-    display: flex; /* Cambiado de grid a flex para que se envuelva bien */
-    flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: center;
     gap: 20px;
   }
+  
   .metric-color { 
     max-width: 400px;
-    flex: 1 1 200px; /* Permite que crezca */
+    flex: 1 1 200px; 
   }
 }
 
 @media (max-width: 800px) {
   body { 
-    height: auto; /* Permite scroll en móvil */
+    height: auto; 
     overflow: auto; 
   }
   .layout {
@@ -384,9 +373,20 @@ h2 {
   }
   .panel { 
     min-width: 0;
-    overflow-y: visible; /* Quita scroll interno */
+    overflow-y: visible; 
   }
   .preview img {
     max-height: 50vh;
+  }
+  /* En móvil, volvemos a la cuadrícula de 2 columnas */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    justify-items: center;
+    width: 100%;
+  }
+  .metric-color {
+    grid-column: 1 / -1; /* Ocupa todo el ancho */
   }
 }
