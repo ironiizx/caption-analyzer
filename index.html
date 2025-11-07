@@ -15,7 +15,6 @@
   </header>
 
   <main class="layout">
-    <!-- Input (sin cambios) -->
     <section class="panel panel--input">
       <h2>Input</h2>
       <div class="field">
@@ -32,7 +31,6 @@
       </div>
     </section>
 
-    <!-- Imagen y caption (sin cambios) -->
     <section class="panel panel--preview">
       <div id="urlPrev" class="preview">
         <div class="placeholder">Paste an image URL to start.</div>
@@ -42,15 +40,12 @@
       </div>
     </section>
 
-    <!-- Métricas (HTML Reordenado + Gradientes) -->
     <section class="panel panel--metrics">
       <h2>Visual Metrics</h2>
       <div class="metrics">
 
-        <!-- Dial para Brightness -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
-            <!-- Definición de Gradiente -->
             <defs>
               <linearGradient id="gradBrightness" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" style="stop-color:#7dd3fc;" />
@@ -67,7 +62,6 @@
           </div>
         </div>
         
-        <!-- Dial para Contrast -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
             <defs>
@@ -86,7 +80,6 @@
           </div>
         </div>
 
-        <!-- Dial para Saturation -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
             <defs>
@@ -105,7 +98,6 @@
           </div>
         </div>
 
-        <!-- Dial para Edge Density -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
             <defs>
@@ -124,7 +116,6 @@
           </div>
         </div>
 
-        <!-- Dial para Text Ratio -->
         <div class="metric-dial">
           <svg viewBox="0 0 36 36">
             <defs>
@@ -143,7 +134,6 @@
           </div>
         </div>
         
-        <!-- Métrica para Dominant Color (REORDENADA AL FINAL) -->
         <div class="metric-color">
           <span>Dominant Color</span>
           <div id="mColor" class="swatch"></div>
@@ -153,7 +143,6 @@
     </section>
   </main>
 
-  <!-- Script (Sin cambios) -->
   <script>
     const API_DEFAULT = 'https://caption-backend-production-5f4a.up.railway.app/caption';
     const backendUrl = localStorage.getItem('CAPTION_API') || API_DEFAULT;
