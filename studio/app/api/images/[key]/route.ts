@@ -4,7 +4,7 @@ export async function GET(_req:Request,{params}:{params:Promise<{key:string}>}){
  const user=await getChatGPTUser();if(!user)return json({error:'Iniciá sesión.'},401);const {BUCKET}=config();if(!BUCKET)return json({error:'Almacenamiento no disponible.'},503);
  const {key}=await params;if(!/^[\w-]{10,90}$/.test(key))return json({error:'Imagen inválida.'},400);
  const obj=await BUCKET.get(user.userId+'/'+key);if(!obj)return json({error:'Imagen no encontrada.'},404);
- return new Response(obj.body,{headers:{'Content-Type':obj.httpMetadata?.contentType||'image/jpeg','Cache-Control':'private, max-age=3600','X-Content-Type-Options':'nosniff'}});
+ return new Response(obj.body,{headers:{'Content-Type':obj.httpMetadata?.contentType||'image/jpeg','Cache-Control':'private, no-store','X-Content-Type-Options':'nosniff'}});
 }
 export async function POST(req:Request,{params}:{params:Promise<{key:string}>}){
  if(!checkOrigin(req))return json({error:'Origen no permitido.'},403);const user=await getChatGPTUser();if(!user)return json({error:'Iniciá sesión para guardar imágenes.'},401);const {BUCKET}=config();if(!BUCKET)return json({error:'Almacenamiento no disponible.'},503);

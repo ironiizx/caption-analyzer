@@ -1,6 +1,18 @@
 # Thumbnail Insights — Creator Lab
 
-Primera entrega de la evolución del analizador de miniaturas UEFN de Roni. Combina herramientas visuales gratuitas, comparación, documentación de experimentos y un endpoint de análisis con IA.
+Segunda entrega del estudio de miniaturas UEFN de Roni. La navegación parte de cuatro tareas: elegir entre dos miniaturas, mejorar una, revisar antes de publicar y explorar una idea. La interfaz usa azul/cian, tipografía más legible, transiciones breves y reducción de movimiento según preferencia del navegador.
+
+## Novedades de Studio 02
+
+- Comparación lado a lado, deslizador con teclado (misma proporción), alternancia y vista real a 160 px. Las imágenes de distinta proporción conservan su encuadre.
+- Métricas secundarias en desplegables; resultados y acciones principales primero. Diseño adaptable a móvil y controles con nombre accesible.
+- Borradores automáticos en IndexedDB, separados del guardado explícito en la cuenta. Recuperación al recargar, listado local y copias JSON v1/v2 con imágenes y registros.
+- Registro fechado de elecciones manuales o recomendaciones de IA, resultados A/B vinculados y chequeos de Epic informados por el usuario. Las imágenes referenciadas no se eliminan para preservar el historial.
+- Distingue elecciones registradas antes del período del test de las registradas durante o después. No calcula una tasa de acierto predictivo con estos registros ni verifica que los resultados fueran desconocidos.
+- Chequeo técnico horizontal sobre dimensiones, peso y MIME del archivo original. Si una copia antigua no conserva los metadatos, muestra «sin dato».
+- Comparación local de color por zonas 12 × 8 entre referencias aportadas. No reconoce semántica, no busca en todo Fortnite y no reproduce el detector de similitud de Epic.
+- `/api/compare`: dos imágenes, preferencia visual A/B o abstención, evidencia específica y mejoras. Salida estructurada validada, caché por par ordenado/contexto/modelo, límite compartido con análisis y sin reintentos automáticos.
+- Las imágenes privadas responden `Cache-Control: private, no-store` para evitar recuperar desde la caché del navegador una imagen de una sesión anterior.
 
 ## Funciones incluidas
 
@@ -15,7 +27,7 @@ Primera entrega de la evolución del analizador de miniaturas UEFN de Roni. Comb
 
 ## Estado real
 
-Las herramientas de navegador funcionan sin API. El sitio se publica privado. El análisis y caption con IA requieren `OPENAI_API_KEY` como secreto del servidor: **la clave existente del usuario no está en este checkout y no se realizaron llamadas pagas durante el desarrollo**. La configuración se informa como pendiente en la interfaz; no se simula una respuesta ni se inventan captions.
+Las herramientas de navegador, registros y borradores funcionan sin API. La comparación inteligente está implementada, pero permanece deshabilitada mientras no se configure la clave existente. El sitio se publica privado. El análisis, caption y comparación con IA requieren `OPENAI_API_KEY` como secreto del servidor: **la clave existente del usuario no está en este checkout y no se realizaron llamadas pagas durante el desarrollo**. La configuración se informa como pendiente en la interfaz; no se simula una respuesta ni se inventan captions.
 
 Portraits, logos, generación visual de conceptos, cobros, créditos comerciales, reportes de Epic y evaluación con participantes quedan para entregas posteriores.
 
@@ -38,7 +50,7 @@ En el entorno administrado de Sites, usar los helpers de la skill Sites para ins
 
 `OPENAI_MODEL`: opcional; predeterminado `gpt-6-luna`. La disponibilidad efectiva de la cuenta se comprueba al activar la integración. La UI informa configuración, no conectividad comprobada.
 
-El límite de 20 es un límite de solicitudes, no un tope de facturación monetario. La imagen se transmite a OpenAI únicamente al pulsar Analizar con IA. `store:false` no equivale a afirmar retención cero en todos los sistemas del proveedor.
+El límite de 20 es un límite de solicitudes, no un tope de facturación monetario. Las imágenes se transmiten a OpenAI únicamente al pedir mejoras o comparar con IA. Cambiar el contexto oculta el análisis anterior hasta obtener un resultado correspondiente al nuevo contexto. `store:false` no equivale a afirmar retención cero en todos los sistemas del proveedor.
 
 ### Datos
 
@@ -54,11 +66,13 @@ Sites aplica las migraciones de producción al publicar. No se modifica el esque
 
 ### Verificación
 
-`npm test`: 12 pruebas sobre la regresión de saturación, grises, alfa, contraste, bordes, CTR, intervalos extremos, CSV e interpretación de respuestas estructuradas.
+`npm test`: 19 pruebas sobre la regresión de saturación, grises, alfa, contraste, bordes, CTR, intervalos extremos, CSV, comparación estructurada, abstención, firmas espaciales, metadatos de origen y orden temporal de decisiones.
 
 `npm run test:integration -- http://localhost:PORT`: pruebas HTTP con usuarios ficticios, solo sobre una instancia local accesible, con D1/R2 configurados y sin clave de API. El script verifica autenticación, propiedad, guardado, recuperación, MIME y origen. Nunca debe ejecutarse contra producción.
 
-`npx tsc --noEmit` y build de producción. QA manual en navegador para carga, revisión, comparación, conceptos y experimentos.
+`npx tsc --noEmit` y build de producción. QA manual en navegador para carga, revisión, comparación, conceptos y experimentos. Studio 02 verificó además recarga del borrador, exportación/importación con relaciones entre registros y vista móvil a 390 px sin desborde horizontal.
+
+`tests/browser-integration.html`: arnés alternativo para cuando el ejecutor no alcanza el servidor local. Copiarlo temporalmente a `public/qa-integration.html`, abrirlo solo en el preview local y ejecutar sus controles con identidades ficticias. Se completaron 14 verificaciones: autenticación, clave ausente, carga, guardado de registros, recuperación, aislamiento entre usuarios, MIME y caché privada. Borrar la copia pública antes del build; nunca publicar el arnés. No realiza llamadas a OpenAI. El acceso de producción con una sesión real de ChatGPT sigue pendiente de verificación.
 
 ## Decisiones y límites metodológicos
 
