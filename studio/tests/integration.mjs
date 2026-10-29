@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+const base=process.argv[2]||'http://terminal.local:4173';
+if(!['terminal.local','localhost','127.0.0.1'].includes(new URL(base).hostname))throw new Error('Integration tests only run on local previews.');
+const id='qa-project-20261029',headers={'oai-authenticated-user-id':'qa-user-local','oai-authenticated-user-email':'qa@example.invalid','Origin':base};
+async function request(path,options={}){const r=await fetch(base+path,options);const data=await r.json();return{status:r.status,data};}
+assert.equal((await request('/api/projects')).status,401);
+assert.equal((await request('/api/status')).data.aiConfigured,false);
+assert.equal((await request('/api/analyze',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}'})).status,503);
+const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+a2ioAAAAASUVORK5CYII=','base64');
+const uploaded=await request('/api/images/qa-image-20261029',{method:'POST',headers:{...headers,'Content-Type':'image/png'},body:png});assert.equal(uploaded.status,200,JSON.stringify(uploaded));
+const project={id,name:'QA integration project',context:'Test only',variants:[{id:'qa-variant-20261029',name:'QA',imageKey:uploaded.data.imageKey,width:1,height:1,metrics:{brightness:100,contrast:0,saturation:0,edges:0,palette:[],histogram:[],method:'test'}}],experiment:{},brief:{}};
+assert.equal((await request('/api/projects',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(project)})).status,200);
+assert.equal((await request('/api/projects?id='+id,{headers})).data.name,'QA integration project');
+assert.equal((await request('/api/projects?id='+id,{headers:{...headers,'oai-authenticated-user-id':'qa-other-user'}})).status,404);
+assert.equal((await request('/api/projects',{method:'POST',headers:{...headers,'oai-authenticated-user-id':'qa-other-user','Content-Type':'application/json'},body:JSON.stringify({...project,variants:[]})})).status,403);
+const image=await fetch(base+uploaded.data.url,{headers});assert.equal(image.status,200);assert.equal(image.headers.get('content-type'),'image/png');
+assert.equal((await request(uploaded.data.url,{headers:{...headers,'oai-authenticated-user-id':'qa-other-user'}})).status,404);
+assert.equal((await request('/api/projects',{method:'POST',headers:{...headers,'Origin':'https://untrusted.invalid','Content-Type':'application/json'},body:JSON.stringify(project)})).status,403);
+assert.equal((await request('/api/images/qa-image-20261029',{method:'POST',headers:{...headers,'Content-Type':'image/png'},body:'not a PNG'})).status,400);
+console.log('Integration: 12 checks passed (auth, persistence, image retrieval, owner isolation, missing key, origin, MIME). No OpenAI requests made.');

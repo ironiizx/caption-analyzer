@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {pixelMetrics,rate,compareRates,parseExperimentCsv,parseAnalysis} from '../lib/core.ts';
+const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-7,`${a} != ${b}`);
+test('HSL is per-pixel: saturated red and cyan never cancel into 0%',()=>{const m=pixelMetrics([255,0,0,255,0,255,255,255],2,1);near(m.saturation,100);assert.equal(m.palette.length,2);});
+test('black, white and grayscale have zero saturation and constant images have zero contrast',()=>{for(const color of [0,50,128,255]){const m=pixelMetrics(Array(9).fill([color,color,color,255]).flat(),3,3);near(m.saturation,0);near(m.contrast,0);near(m.edges,0);near(m.brightness,color/255*100);}});
+test('transparent pixels are measured against white',()=>{const m=pixelMetrics([0,0,0,0],1,1);near(m.brightness,100);assert.equal(m.palette[0].color,'#ffffff');});
+test('maximum global contrast for equal black/white sample is 100',()=>{const m=pixelMetrics([0,0,0,255,255,255,255,255],2,1);near(m.contrast,100);near(m.histogram.reduce((a,b)=>a+b,0),1);});
+test('Sobel detects a boundary but not a uniform region',()=>{const data=[];for(let y=0;y<5;y++)for(let x=0;x<5;x++){const k=x<2?0:255;data.push(k,k,k,255);}assert.ok(pixelMetrics(data,5,5).edges>0);});
+test('rejects malformed pixel buffers',()=>assert.throws(()=>pixelMetrics([0,0,0],1,1)));
+test('CTR and lift retain percentage-point distinction',()=>{const r=compareRates({clicks:150,impressions:10000},{clicks:180,impressions:10000});near(r.a.ctr,1.5);near(r.b.ctr,1.8);near(r.delta,.3);near(r.uplift,20);assert.ok(r.a.low<1.5&&r.a.high>1.5);});
+test('zero baseline never produces Infinity uplift',()=>{assert.equal(compareRates({clicks:0,impressions:100},{clicks:3,impressions:100}).uplift,null);assert.ok(rate(0,100).high>0);assert.ok(rate(100,100).low<100);});
+test('invalid experiments fail before results can be shown',()=>{for(const [c,n] of [[-1,100],[101,100],[1,0],[.5,10],[NaN,10],[1,Infinity],[1,1e10]])assert.throws(()=>rate(c,n));});
+test('CSV handles BOM, CRLF and semicolon; rejects invalid counts and wrong headers',()=>{assert.equal(parseExperimentCsv('\uFEFFvariante;impresiones;clics\r\nA;100;4\r\nB;100;7')[1].clicks,7);for(const input of ['a,b,c\nA,1,2\nB,3,4','variante,impresiones,clics\nA,100,\nB,100,5','variante,impresiones,clics\nA,10,11\nB,10,0','variante,impresiones,clics\nA,100,4\nA,100,7'])assert.throws(()=>parseExperimentCsv(input));});
+test('incomplete or refused model output cannot become a fabricated analysis',()=>{assert.throws(()=>parseAnalysis({status:'incomplete',output:[]}));assert.throws(()=>parseAnalysis({status:'completed',output:[{content:[{type:'refusal',refusal:'No'}]}]}));assert.throws(()=>parseAnalysis({status:'completed',output:[{content:[{type:'output_text',text:'{"caption":"x"}'}]}]}));});
+test('structured model output is parsed and validated',()=>{const a={caption:'Personaje salta',understanding:'Carrera',detected_text:'RUN',strengths:['Foco claro'],improvements:[{title:'Tamaño',reason:'Poco espacio',action:'Separar'}],hypothesis:'Sin texto',limitations:'Hipótesis visual'};assert.deepEqual(parseAnalysis({status:'completed',output:[{content:[{type:'output_text',text:JSON.stringify(a)}]}]}),a);});
