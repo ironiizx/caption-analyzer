@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Local integration QA</title></head><body><h1>Local integration QA</h1><p>Only local previews. Fictional identities, no OpenAI calls.</p><button id="run">Run local integration tests</button><pre id="out" role="status">Ready</pre><script>
+document.querySelector('#run').onclick=async()=>{
+ const out=document.querySelector('#out'),lines=[];const log=s=>{lines.push(s);out.textContent=lines.join('\n')};
+ if(!['terminal.local','localhost','127.0.0.1'].includes(location.hostname)){log('Blocked: local previews only.');return;}
+ const eq=(a,b,label)=>{if(a!==b)throw Error(label+': '+a+' != '+b);log('PASS '+label)};
+ const headers={'oai-authenticated-user-id':'qa-v2-owner-a','oai-authenticated-user-email':'qa-v2@example.invalid'};
+ const other={...headers,'oai-authenticated-user-id':'qa-v2-owner-b'};
+ const req=async(path,opts={})=>{const r=await fetch(path,opts);let data;try{data=await r.json()}catch{}return{status:r.status,data}};
+ try{
+  const status=await req('/api/status');eq(status.data.aiConfigured,false,'No API key in local test');
+  eq((await req('/api/projects')).status,401,'Anonymous project access rejected');
+  eq((await req('/api/compare',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'})).status,401,'Anonymous comparison rejected');
+  eq((await req('/api/compare',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:'{}'})).status,503,'Missing key prevents comparison');
+  const canvas=document.createElement('canvas');canvas.width=20;canvas.height=20;const ctx=canvas.getContext('2d');ctx.fillStyle='#238eff';ctx.fillRect(0,0,20,20);ctx.fillStyle='#'+Math.floor(Math.random()*0xffffff).toString(16).padStart(6,'0');ctx.fillRect(0,0,1,1);const blob=await new Promise(r=>canvas.toBlob(r,'image/png'));
+  const upload=await req('/api/images/qa-v2-image-20261029',{method:'POST',headers:{...headers,'Content-Type':'image/png'},body:blob});eq(upload.status,200,'Image upload');
+  const p={id:'qa-v2-project-20261029',name:'QA V2 persistence',context:'Test only',variants:[{id:'qa-v2-variant-20261029',name:'Test',imageKey:upload.data.imageKey,width:20,height:20,metrics:{brightness:50,contrast:0,saturation:100,edges:0,palette:[],histogram:[],method:'QA'}}],experiment:{},brief:{},predictions:[],epicRecords:[{id:'qa-record-20261029',variantId:'qa-v2-variant-20261029',status:'similarity',checkedAt:'2026-10-29',createdAt:new Date().toISOString(),island:'QA',notes:'Test'}],abRecords:[]};
+  eq((await req('/api/projects',{method:'POST',headers:{...headers,'Content-Type':'application/json'},body:JSON.stringify(p)})).status,200,'Save project with V2 records');
+  const read=await req('/api/projects?id='+p.id,{headers});eq(read.data.epicRecords.length,1,'Read preserved record');
+  eq((await req('/api/projects?id='+p.id,{headers:other})).status,404,'Other owner cannot read project');
+  eq((await req('/api/projects',{method:'POST',headers:{...other,'Content-Type':'application/json'},body:JSON.stringify({...p,variants:[]})})).status,403,'Other owner cannot overwrite project');
+  const img=await fetch(upload.data.url,{headers});eq(img.status,200,'Owner retrieves image');eq(img.headers.get('content-type'),'image/png','Correct image MIME');eq(img.headers.get('cache-control'),'private, no-store','No cross-session browser caching');
+  eq((await req(upload.data.url,{headers:other})).status,404,'Other owner cannot read image');
+  eq((await req('/api/images/qa-v2-image-20261029',{method:'POST',headers:{...headers,'Content-Type':'image/png'},body:'invalid'})).status,400,'Invalid image rejected');
+  log('COMPLETE: 14 checks passed. No OpenAI requests made.');
+ }catch(e){log('FAIL '+e.message)}
+};
+</script></body></html>
