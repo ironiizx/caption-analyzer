@@ -1,6 +1,17 @@
-# Thumbnail Insights — Creator Lab
+# Thumbnail Insights — Studio 03 / Discover Lab
 
-Segunda entrega del estudio de miniaturas UEFN de Roni. La navegación parte de cuatro tareas: elegir entre dos miniaturas, mejorar una, revisar antes de publicar y explorar una idea. La interfaz usa azul/cian, tipografía más legible, transiciones breves y reducción de movimiento según preferencia del navegador.
+Discover Lab agrega una vista previa independiente de Fortnite para evaluar diseños en contexto antes de publicarlos. El estudio de análisis, comparación e historial se conserva en `/`; el simulador está en `/discover`.
+
+## Novedades de Studio 03
+
+- Escenarios Discover horizontal, Top 10 portrait, ficha de isla y A-Spot ajustable 4:1 / 5:1. Son plantillas aproximadas, no una réplica universal del cliente de Fortnite.
+- Paquetes A/B independientes con horizontal, portrait, logo transparente y A-Spot; un mismo escenario, posición, referencias y encuadre para ambas variantes.
+- Modo «Tu captura»: cargar una pantalla propia de Fortnite y dibujar el área a sustituir. Ajuste numérico, flechas, radios de esquina y selección del formato. Se mantiene el resto de la captura.
+- Posición de la tarjeta, imágenes vecinas propias, cover/contain, punto de enfoque, guías aproximadas y logo opcional. Pantalla completa y vista a 100 %.
+- Copias de trabajo de hasta 2560 px, archivos originales hasta 12 MB y 64 megapíxeles; PNG con alfa para logos. No sustituye los originales de entrega.
+- Borrador local en IndexedDB separado del estudio, copia JSON autocontenida e importación validada. Límite conjunto de datos de imagen: 32 MB.
+- Exportación PNG sin guías ni selección y presentación HTML A/B con imágenes embebidas; imprimible como PDF. Escenarios construidos con el mismo renderer de la vista previa.
+- Uso local sin solicitudes a OpenAI. No calcula CTR, atención real ni probabilidad de aprobación por Epic. Los ejemplos geométricos son propios y ficticios; no se distribuyen imágenes de clientes ni capturas de Fortnite.
 
 ## Novedades de Studio 02
 
@@ -27,9 +38,9 @@ Segunda entrega del estudio de miniaturas UEFN de Roni. La navegación parte de 
 
 ## Estado real
 
-Las herramientas de navegador, registros y borradores funcionan sin API. La comparación inteligente está implementada, pero permanece deshabilitada mientras no se configure la clave existente. El sitio se publica privado. El análisis, caption y comparación con IA requieren `OPENAI_API_KEY` como secreto del servidor: **la clave existente del usuario no está en este checkout y no se realizaron llamadas pagas durante el desarrollo**. La configuración se informa como pendiente en la interfaz; no se simula una respuesta ni se inventan captions.
+El Site continúa privado. El usuario configuró la misma `OPENAI_API_KEY` como secreto del servidor y confirmó que la comparación con IA funciona en producción. La clave no está en el repositorio. No se realizaron llamadas pagas ni se generaron imágenes durante esta entrega.
 
-Portraits, logos, generación visual de conceptos, cobros, créditos comerciales, reportes de Epic y evaluación con participantes quedan para entregas posteriores.
+Discover Lab funciona sin API y guarda sus escenarios únicamente en el navegador; descargar la copia permite trasladarlos a otro equipo. La sincronización entre dispositivos, un modelo entrenado con experimentos, pruebas con participantes y cobros quedan para entregas posteriores.
 
 ## Desarrollo
 
@@ -66,13 +77,13 @@ Sites aplica las migraciones de producción al publicar. No se modifica el esque
 
 ### Verificación
 
-`npm test`: 19 pruebas sobre la regresión de saturación, grises, alfa, contraste, bordes, CTR, intervalos extremos, CSV, comparación estructurada, abstención, firmas espaciales, metadatos de origen y orden temporal de decisiones.
+`npm test`: 25 pruebas sobre la regresión de saturación, grises, alfa, contraste, bordes, CTR, intervalos extremos, CSV, comparación estructurada, abstención, firmas espaciales, metadatos de origen y orden temporal de decisiones; además, geometría de selección/encuadre, aislamiento A/B, importación y límites del simulador.
 
 `npm run test:integration -- http://localhost:PORT`: pruebas HTTP con usuarios ficticios, solo sobre una instancia local accesible, con D1/R2 configurados y sin clave de API. El script verifica autenticación, propiedad, guardado, recuperación, MIME y origen. Nunca debe ejecutarse contra producción.
 
 `npx tsc --noEmit` y build de producción. QA manual en navegador para carga, revisión, comparación, conceptos y experimentos. Studio 02 verificó además recarga del borrador, exportación/importación con relaciones entre registros y vista móvil a 390 px sin desborde horizontal.
 
-`tests/browser-integration.html`: arnés alternativo para cuando el ejecutor no alcanza el servidor local. Copiarlo temporalmente a `public/qa-integration.html`, abrirlo solo en el preview local y ejecutar sus controles con identidades ficticias. Se completaron 14 verificaciones: autenticación, clave ausente, carga, guardado de registros, recuperación, aislamiento entre usuarios, MIME y caché privada. Borrar la copia pública antes del build; nunca publicar el arnés. No realiza llamadas a OpenAI. El acceso de producción con una sesión real de ChatGPT sigue pendiente de verificación.
+`tests/browser-integration.html`: arnés alternativo para cuando el ejecutor no alcanza el servidor local. Copiarlo temporalmente a `public/qa-integration.html`, abrirlo solo en el preview local y ejecutar sus controles con identidades ficticias. Se completaron 14 verificaciones: autenticación, clave ausente, carga, guardado de registros, recuperación, aislamiento entre usuarios, MIME y caché privada. Borrar la copia pública antes del build; nunca publicar el arnés. No realiza llamadas a OpenAI. La prueba funcional de IA en producción fue realizada y confirmada por el usuario; estas pruebas automatizadas no consumen API.
 
 ## Decisiones y límites metodológicos
 
@@ -89,7 +100,9 @@ La guía local recomienda comprobaciones; no reconoce objetos. La guía de conce
 
 ## Próxima entrega
 
-1. Configurar la misma clave del usuario como secreto del Site y probar un análisis visual real con un presupuesto acotado.
-2. Evaluar recomendaciones con miniaturas y criterios autorizados de Roni.
-3. Generación de portraits/logos, correcciones y registro de costos.
-4. Importación de reportes reales, pruebas con participantes y documentación para la tesis.
+1. Validar el simulador con los paquetes reales de Roni y capturas de las plataformas que utiliza.
+2. Incorporar pruebas con participantes y resultados por posición/escenario, diferenciados del CTR real de Epic.
+3. Registrar decisiones previas a experimentos A/B y sus resultados para evaluar un modelo propio sin fuga de datos entre versiones de una misma isla.
+4. Generación visual y costos solo después de definir un presupuesto explícito.
+
+Referencias de formato: [Epic: Making Thumbnails and Videos](https://dev.epicgames.com/documentation/fortnite/making-thumbnails-and-videos-in-fortnite-creative). La interfaz real puede variar por versión, plataforma y personalización.

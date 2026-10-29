@@ -17,3 +17,7 @@
 @media(max-width:640px){.hero-art{display:none}.hero{padding:30px 0 28px;gap:0}.hero h1{font-size:42px}.task-card p{font-size:13px}.task-card{min-height:220px}.epic-form input,.epic-form select,.epic-form textarea,.form-panel input,.form-panel select,.concept-input input,.concept-input select,.ai-card textarea{font-size:16px}}
 
 @media(max-width:640px){.workspace-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;overflow:visible;border-bottom:0;margin:0 0 17px}.workspace-tabs>button{justify-content:center;padding:10px 4px;border:1px solid #2d415b;border-radius:6px;font-size:11px;gap:5px}.workspace-tabs>button.active{background:#18364e;border-color:#4d9bb9}.workspace-tabs>button>svg{width:14px;height:14px}.compare-toolbar .segmented{flex-basis:100%;overflow:visible;justify-content:space-between}.compare-toolbar>.quiet-button{margin-left:auto}.compare-toolbar{gap:7px}.segmented>button{padding:7px 9px;font-size:11px}}
+
+.discover-nav-link{color:#ddf88a;font-size:13px;font-weight:700;padding:12px 15px;border:1px solid #5c6851;border-radius:8px;text-decoration:none;white-space:nowrap}.discover-nav-link:hover{background:#283229}.discover-hero-link{text-decoration:none;width:max-content;display:inline-flex}@media(max-width:640px){.discover-nav-link{font-size:10px;padding:8px}.site-header .brand{max-width:135px}.site-header{gap:6px}}
+
+@media(max-width:640px){.top-nav{gap:0}.top-nav>button{padding-left:6px;padding-right:6px}.new-project{padding:6px}.discover-nav-link{padding:8px 6px}}
